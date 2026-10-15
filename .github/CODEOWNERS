@@ -2,26 +2,26 @@
 # are guardrails (CI, agent instructions, analysis and test thresholds) that
 # must stay owner-approved even if the default owner changes.
 
-* @tkaratug
+* @simurg-hq/maintainers
 
 # CI and repository configuration
-/.github/ @tkaratug
-/Makefile @tkaratug
-/scripts/ci/ @tkaratug
-/lefthook.yml @tkaratug
-/.gitleaks.toml @tkaratug
+/.github/ @simurg-hq/maintainers
+/Makefile @simurg-hq/maintainers
+/scripts/ci/ @simurg-hq/maintainers
+/lefthook.yml @simurg-hq/maintainers
+/.gitleaks.toml @simurg-hq/maintainers
 
 # Agent instructions
-/AGENTS.md @tkaratug
-/CLAUDE.md @tkaratug
+/AGENTS.md @simurg-hq/maintainers
+/CLAUDE.md @simurg-hq/maintainers
 
 # Static analysis and formatting
-/phpstan.neon @tkaratug
-/phpstan.neon.dist @tkaratug
-/pint.json @tkaratug
+/phpstan.neon @simurg-hq/maintainers
+/phpstan.neon.dist @simurg-hq/maintainers
+/pint.json @simurg-hq/maintainers
 
 # Test thresholds and architecture tests
-/phpunit.xml @tkaratug
-/phpunit.xml.dist @tkaratug
-/tests/Pest.php @tkaratug
-/tests/Arch/ @tkaratug
+/phpunit.xml @simurg-hq/maintainers
+/phpunit.xml.dist @simurg-hq/maintainers
+/tests/Pest.php @simurg-hq/maintainers
+/tests/Arch/ @simurg-hq/maintainers
