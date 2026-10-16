@@ -4,7 +4,7 @@ BASE ?= origin/main
 HEAD_REF ?= HEAD
 CI_TOOLS_IMAGE := $(notdir $(CURDIR))-ci-tools:local
 SHELLCHECK_IMAGE := koalaman/shellcheck:v0.11.0
-DOCKER_RUN := docker run --rm -v "$(CURDIR):/work" -w /work -e PR_SIZE_APPROVED
+DOCKER_RUN := docker run --rm -v "$(CURDIR):/work" -w /work -e PR_SIZE_APPROVED -e TESTS_CHANGE_APPROVED
 GITLEAKS_IMAGE := zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
 # PHP base images for the supported versions. The CI matrix tests each of them;
 # Pint and Larastan run on the newest.
@@ -17,7 +17,7 @@ PHP_IMAGE := $(notdir $(CURDIR))-php$(PHP):local
 PHP_RUN := docker run --rm -v "$(CURDIR):/app" -w /app $(PHP_IMAGE)
 ARGS ?=
 
-.PHONY: help ci-tools-image pr-size test-ci-scripts lint-ci-scripts php-image composer-update composer \
+.PHONY: help ci-tools-image pr-size test-tampering test-ci-scripts lint-ci-scripts php-image composer-update composer \
 	lint pint larastan test security composer-audit secrets
 
 help: ## List available targets
@@ -28,6 +28,9 @@ ci-tools-image:
 
 pr-size: ci-tools-image ## Measure this branch against BASE (default origin/main)
 	$(DOCKER_RUN) --entrypoint bash $(CI_TOOLS_IMAGE) scripts/ci/pr-size.sh $(BASE) $(HEAD_REF)
+
+test-tampering: ci-tools-image ## Fail on assertions removed or changed and skips added in tests since BASE
+	$(DOCKER_RUN) --entrypoint bash $(CI_TOOLS_IMAGE) scripts/ci/test-tampering.sh $(BASE) $(HEAD_REF)
 
 test-ci-scripts: ci-tools-image ## Run the CI script tests
 	$(DOCKER_RUN) $(CI_TOOLS_IMAGE) scripts/ci/tests
