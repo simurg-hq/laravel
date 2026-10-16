@@ -1,0 +1,33 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  composer-audit:
+    # Each Laravel major pulls in a different dependency set.
+    name: composer-audit (laravel ${{ matrix.laravel }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        laravel: ['12', '13']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: make composer-update LARAVEL=${{ matrix.laravel }}
+      - run: make composer-audit
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # gitleaks scans every commit, not only the checked-out tree.
+          fetch-depth: 0
+      - run: make secrets

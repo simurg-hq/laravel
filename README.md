@@ -11,7 +11,16 @@ Prerequisites:
 
 All language toolchains and quality gates run in pinned Docker images, so nothing else needs to be installed on the host.
 
-Test commands will be added together with the package skeleton.
+```sh
+make composer-update    # install dependencies (PHP 8.5, Laravel 13 by default)
+make lint               # format check and static analysis
+make test               # test suite
+make help               # all targets
+```
+
+Pass `PHP` (8.3, 8.4, 8.5) and `LARAVEL` (12, 13) to try another supported
+combination, for example `make composer-update PHP=8.3 LARAVEL=12` followed by
+`make test PHP=8.3`.
 
 ## License
 

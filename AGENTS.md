@@ -56,9 +56,21 @@ evidence. "It should work" is not evidence.
 
 ```sh
 make help               # list all targets
+make composer-update    # resolve dependencies (PHP=8.5 LARAVEL=13 by default)
+make lint               # Pint format check and Larastan at level max
+make test               # Pest on Orchestra Testbench
+make security           # composer audit and gitleaks
 make lint-ci-scripts    # shellcheck for scripts/ci
 make test-ci-scripts    # bats tests for scripts/ci
 make pr-size            # measure this branch against origin/main
+```
+
+There is no committed `composer.lock`: like any library, each run resolves
+the newest versions users would get. CI tests every supported PHP and Laravel
+pair; reproduce one locally with the same `PHP` for both commands:
+
+```sh
+make composer-update PHP=8.3 LARAVEL=12 && make test PHP=8.3
 ```
 
 A task that adds a gate also adds its `make` target and lists it here.
