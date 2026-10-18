@@ -60,6 +60,7 @@ make composer-update    # resolve dependencies (PHP=8.5 LARAVEL=13 by default)
 make lint               # Pint format check and Larastan at level max
 make test               # Pest on Orchestra Testbench
 make security           # composer audit and gitleaks
+make secrets-staged     # gitleaks over the staged changes (pre-commit hook)
 make lint-ci-scripts    # shellcheck for scripts/ci
 make test-ci-scripts    # bats tests for scripts/ci
 make pr-size            # measure this branch against origin/main
@@ -73,6 +74,11 @@ pair; reproduce one locally with the same `PHP` for both commands:
 ```sh
 make composer-update PHP=8.3 LARAVEL=12 && make test PHP=8.3
 ```
+
+`lefthook.yml` runs the format, static analysis and secret checks on commit,
+each only when a matching file is staged; enable it once per clone with
+`lefthook install`. Tests are not part of the hooks; CI runs them on every pull
+request. Never skip the hooks with `--no-verify`.
 
 A task that adds a gate also adds its `make` target and lists it here.
 
