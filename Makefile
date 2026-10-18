@@ -17,7 +17,7 @@ PHP_IMAGE := $(notdir $(CURDIR))-php$(PHP):local
 PHP_RUN := docker run --rm -v "$(CURDIR):/app" -w /app $(PHP_IMAGE)
 ARGS ?=
 
-.PHONY: help ci-tools-image pr-size test-tampering test-ci-scripts lint-ci-scripts php-image composer-update composer \
+.PHONY: help ci-tools-image pr-size test-tampering test-ci-scripts lint-ci-scripts php-image composer-update composer secrets-staged \
 	lint pint larastan test security composer-audit secrets
 
 help: ## List available targets
@@ -68,3 +68,9 @@ composer-audit: php-image ## Check the installed PHP dependencies for known vuln
 
 secrets: ## Scan the git history for secrets with gitleaks
 	$(DOCKER_RUN) $(GITLEAKS_IMAGE) git --redact --no-banner -v .
+
+# `git commit -a` and `git commit <path>` stage into a temporary index that Git
+# names by its absolute host path; the container needs it relative to the repo.
+secrets-staged: ## Scan the staged changes for secrets with gitleaks (pre-commit hook)
+	$(DOCKER_RUN) -e GIT_INDEX_FILE=$(patsubst $(CURDIR)/%,%,$(or $(GIT_INDEX_FILE),.git/index)) \
+		$(GITLEAKS_IMAGE) git --staged --redact --no-banner -v .
