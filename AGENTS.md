@@ -66,7 +66,7 @@ make secrets-staged     # gitleaks over the staged changes (pre-commit hook)
 make lint-ci-scripts    # shellcheck for scripts/ci
 make test-ci-scripts    # bats tests for scripts/ci
 make pr-size            # measure this branch against origin/main
-make test-tampering     # assertions removed or changed and skips added in tests since origin/main
+make test-tampering     # assertions removed or changed and skips added in tests since origin/main, and any change to the files in STRICT_TEST_PATHS
 ```
 
 There is no committed `composer.lock`: like any library, each run resolves
