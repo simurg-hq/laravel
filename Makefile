@@ -2,6 +2,11 @@
 
 BASE ?= origin/main
 HEAD_REF ?= HEAD
+# Files test-tampering protects line by line (git pathspecs; * also matches /).
+# It reads this line from the base of the pull request, so a change to the
+# list takes effect only after it is merged. Keep it on one line set with :=;
+# continuation lines and += are not read.
+STRICT_TEST_PATHS := tests/Arch/* tests/Pest.php phpunit.xml.dist
 CI_TOOLS_IMAGE := $(notdir $(CURDIR))-ci-tools:local
 SHELLCHECK_IMAGE := koalaman/shellcheck:v0.11.0
 DOCKER_RUN := docker run --rm -v "$(CURDIR):/work" -w /work -e PR_SIZE_APPROVED -e TESTS_CHANGE_APPROVED
@@ -29,7 +34,7 @@ ci-tools-image:
 pr-size: ci-tools-image ## Measure this branch against BASE (default origin/main)
 	$(DOCKER_RUN) --entrypoint bash $(CI_TOOLS_IMAGE) scripts/ci/pr-size.sh $(BASE) $(HEAD_REF)
 
-test-tampering: ci-tools-image ## Fail on assertions removed or changed and skips added in tests since BASE
+test-tampering: ci-tools-image ## Fail on assertions removed or changed and skips added in tests since BASE, and on any change to STRICT_TEST_PATHS
 	$(DOCKER_RUN) --entrypoint bash $(CI_TOOLS_IMAGE) scripts/ci/test-tampering.sh $(BASE) $(HEAD_REF)
 
 test-ci-scripts: ci-tools-image ## Run the CI script tests
@@ -58,8 +63,10 @@ pint: php-image ## Check PHP formatting with Pint
 larastan: php-image ## Run Larastan (phpstan.neon)
 	$(PHP_RUN) vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
+# The configuration is named, so an added phpunit.xml, which PHPUnit would
+# prefer, cannot replace the protected phpunit.xml.dist.
 test: php-image ## Run the Pest test suite (ARGS are passed to Pest)
-	$(PHP_RUN) vendor/bin/pest $(ARGS)
+	$(PHP_RUN) vendor/bin/pest --configuration phpunit.xml.dist $(ARGS)
 
 security: composer-audit secrets ## Run all security scans
 
