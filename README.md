@@ -4,18 +4,10 @@ The Laravel SDK for Simurg. It syncs scheduled tasks as monitors and reports tas
 
 ## Local setup
 
-Prerequisites:
-
-- [Docker](https://docs.docker.com/get-docker/) (OrbStack or Docker Desktop)
-- [Lefthook](https://lefthook.dev/) for Git hooks
-
-All language toolchains and quality gates run in pinned Docker images, so nothing else needs to be installed on the host.
-
-Run `lefthook install` once per clone to enable the Git hooks: format, static analysis and a secret scan on every commit. Tests run in CI on every pull request.
+Prerequisite: [Docker](https://docs.docker.com/get-docker/) (OrbStack or Docker Desktop). The toolchain runs in a pinned Docker image.
 
 ```sh
 make composer-update    # install dependencies (PHP 8.5, Laravel 13 by default)
-make lint               # format check and static analysis
 make test               # test suite
 make help               # all targets
 ```

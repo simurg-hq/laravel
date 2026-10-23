@@ -1,9 +1,0 @@
-# Paths excluded from the PR size check (scripts/ci/pr-size.sh).
-# One glob per line; '*' also matches '/'.
-
-# Tests
-tests/*
-*.bats
-
-# Generated files
-composer.lock
